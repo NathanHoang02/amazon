@@ -1,3 +1,7 @@
+import {car as myCart} from '../data/cart.js';
+
+
+
 let productsHTML = '';
 
 products.forEach((product) => 
@@ -61,7 +65,7 @@ products.forEach((product) =>
     {
       button.addEventListener('click', () => 
       {
-        const productId = button.dataset.productId;
+        const {productId} = button.dataset;
 
         let matchingItem; 
 
@@ -86,8 +90,8 @@ products.forEach((product) =>
         else
           {
             cart.push({
-            productId: productId, 
-            quantity: quantity
+            productId, 
+            quantity
             });
           }  
         
