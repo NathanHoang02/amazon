@@ -1,4 +1,4 @@
-import { formatCurrency } from "../scripts/utils/money.js";
+import {formatCurrency} from '../scripts/utils/money.js';
 
 export function getProduct(productId) {
   let matchingProduct;
@@ -11,12 +11,11 @@ export function getProduct(productId) {
 
   return matchingProduct;
 }
-class Product
-{
-  id; 
-  image; 
-  name; 
-  rating; 
+class Product {
+  id;
+  image;
+  name;
+  rating;
   priceCents;
 
   constructor(productDetails) {
@@ -27,128 +26,116 @@ class Product
     this.priceCents = productDetails.priceCents;
   }
 
-  getStarsUrl()
-  {
+  getStarsUrl() {
     return `images/ratings/rating-${this.rating.stars * 10}.png`;
   }
 
-  getPrice()
-  {
+  getPrice() {
     return `$${formatCurrency(this.priceCents)}`;
   }
 
-  extraInfoHTML()
-  {
-    return ``; 
+  extraInfoHTML() {
+    return '';
   }
 }
 
-class Clothing extends Product
-{
+class Clothing extends Product {
   sizeChartLink;
-  constructor(productDetails) 
-  {
+
+  constructor(productDetails) {
     super(productDetails);
     this.sizeChartLink = productDetails.sizeChartLink;
   }
 
-  extraInfoHTML()
-  {
-    //super.extraInfoHTML();
+  extraInfoHTML() {
+    // super.extraInfoHTML();
     return `
-    <a href="${this.sizeChartLink}" 
-    target="_blank">
-    Size Chart
-    </a>`; 
+      <a href="${this.sizeChartLink}" target="_blank">
+        Size chart
+      </a>
+    `;
   }
 }
+
 /*
-const date = new Date(); 
-console.log(date); 
+const date = new Date();
+console.log(date);
 console.log(date.toLocaleTimeString());
 */
 
 /*
-console.log(this)
-const object2 = 
-{
-  a: 1, 
+console.log(this);
+
+const object2 = {
+  a: 2,
   b: this.a
-}
+};
 */
 
 /*
-function logThis()
-{
+function logThis() {
   console.log(this);
 }
-
 logThis();
 logThis.call('hello');
 
-
 this
-const object3 = 
-{
-  method: () => 
-    {
-      console.log(this);
-    }
+const object3 = {
+  method: () => {
+    console.log(this);
+  }
 };
 object3.method();
 */
 
+export let products = [];
 
-export let products = []; 
-
-export function loadProductsFetch()
-{
-  const promise = fetch('https://supersimplebackend.dev/products'). then((response) =>
-  {
+export function loadProductsFetch() {
+  const promise = fetch(
+    'https://supersimplebackend.dev/products'
+  ).then((response) => {
     return response.json();
-  }).then((productsData)=>
-    {
-       products = productsData.map((productDetails) => 
-      {
-        if (productDetails.type === "clothing") 
-        {
-          return new Clothing(productDetails);
-        }
+  }).then((productsData) => {
+    products = productsData.map((productDetails) => {
+      if (productDetails.type === 'clothing') {
+        return new Clothing(productDetails);
+      }
       return new Product(productDetails);
-      });
+    });
 
     console.log('load products');
-    });
-    return promise; 
+  })/*.catch((error) => {
+    console.log('Unexpected error. Please try again later.');
+  });*/
+
+  return promise;
 }
 
 /*
-loadProductsFetch().then(() => 
-  {
-    console.log('next step');
-
-  });
+loadProductsFetch().then(() => {
+  console.log('next step');
+});
 */
 
-export function loadProducts(fun)
-{
-  const xhr = new XMLHttpRequest(); 
+export function loadProducts(fun) {
+  const xhr = new XMLHttpRequest();
 
-  xhr.addEventListener('load', () =>
-    {
-      products = JSON.parse(xhr.response).map((productDetails) => 
-      {
-        if (productDetails.type === "clothing") 
-        {
-          return new Clothing(productDetails);
-        }
+  xhr.addEventListener('load', () => {
+    products = JSON.parse(xhr.response).map((productDetails) => {
+      if (productDetails.type === 'clothing') {
+        return new Clothing(productDetails);
+      }
       return new Product(productDetails);
-      });
+    });
 
     console.log('load products');
 
     fun();
-    });
+  });
+
+  xhr.addEventListener('error', (error) => {
+    console.log('Unexpected error. Please try again later.');
+  });
 
   xhr.open('GET', 'https://supersimplebackend.dev/products');
   xhr.send();
